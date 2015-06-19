@@ -1,0 +1,15 @@
+{
+  "name": "node-qualialert",
+  "version": "0.0.1",
+  "description": "Alerts Users when Reservation is Active Error",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sam Womack",
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^1.3.4",
+    "xml2js": "^0.4.9"
+  }
+}
