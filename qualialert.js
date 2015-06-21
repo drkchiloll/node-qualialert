@@ -9,7 +9,7 @@ var runFn = function(qualisys) {
       // console.log(reservation);
       var provStats = reservation.$.ProvisioningStatus;
       if (provStats !== 'Ready' && provStats !== 'Not Run') {
-        console.log(resStats);
+        console.log(provStats);
         return reservation.$.Name + ' ' + reservation.$.ProvisioningStatus;
       }
     });
