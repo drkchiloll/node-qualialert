@@ -3,6 +3,8 @@ var QualiApi = require('./lib/QualiApi'),
     emailer  = require('./emailer'),
     config   = require('./config');
 
+var intTimer = 300000;
+
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.map(reservations, function(reservation) {
