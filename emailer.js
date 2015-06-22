@@ -1,10 +1,11 @@
 var nodemailer = require('nodemailer');
 var transporter = nodemailer.createTransport();
+var emailList = require('./config').emailList;
 
 module.exports.sendMail = function(msg) {
   var mailOptions = {
     from : 'samuel.womack@wwt.com',
-    to : 'Joe.Weber@wwt.com, Jon.Henderson@wwt.com',
+    to : emailList,
     bcc : 'samuel.womack@wwt.com',
     subject : 'Quali Active Errors',
     text : msg

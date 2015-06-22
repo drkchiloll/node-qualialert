@@ -6,7 +6,6 @@ var QualiApi = require('./lib/QualiApi'),
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.map(reservations, function(reservation) {
-      // console.log(reservation);
       var provStats = reservation.$.ProvisioningStatus;
       if (provStats !== 'Ready' && provStats !== 'Not Run' && provStats !== 'Teardown') {
         console.log(provStats);
@@ -27,8 +26,13 @@ var runFn = function(qualisys) {
       reservations.forEach(function(reservation) {
         if (reservation) activeErr += reservation + '\n';
       });
-      if (activeErr) emailer.sendMail(activeErr);
+      if (activeErr) {
+        emailer.sendMail(activeErr);
+        intTimer = 3600000;
+      } else {
+        intTimer = 300000;
+      }
       console.log('Interval Completed');
     });
-  }, 300000);
+  }, intTimer);
 })();
