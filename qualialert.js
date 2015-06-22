@@ -8,7 +8,7 @@ var runFn = function(qualisys) {
     return Promise.map(reservations, function(reservation) {
       // console.log(reservation);
       var provStats = reservation.$.ProvisioningStatus;
-      if (provStats !== 'Ready' && provStats !== 'Not Run') {
+      if (provStats !== 'Ready' && provStats !== 'Not Run' && provStats !== 'Teardown') {
         console.log(provStats);
         return reservation.$.Name + ' ' + reservation.$.ProvisioningStatus;
       }
