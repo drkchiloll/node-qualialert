@@ -9,7 +9,7 @@ var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.map(reservations, function(reservation) {
       var provStats = reservation.$.ProvisioningStatus;
-      if (provStats !== 'Ready' && provStats !== 'Not Run' && provStats !== 'Teardown') {
+      if (provStats === 'Error') {
         console.log(provStats);
         return reservation.$.Name + ' ' + reservation.$.ProvisioningStatus;
       }
