@@ -4,7 +4,7 @@ var emailList = require('./config').emailList;
 
 module.exports.sendMail = function(msg) {
   var mailOptions = {
-    from : 'samuel.womack@wwt.com',
+    from : 'CloudShell-Errors@wwt.com',
     to : emailList,
     bcc : 'samuel.womack@wwt.com',
     subject : 'Quali Active Errors',
