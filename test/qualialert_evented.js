@@ -7,13 +7,13 @@ var EventEmitter = require('events').EventEmitter;
 var qualiEvent = new EventEmitter();
 var sendInitial = true;
 var inError = false;
-var msg;
 
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.filter(reservations, function(reservation) {
       var provStats = reservation.$.ProvisioningStatus;
-      if (provStats === 'Error') {
+      console.log(provStats);
+      if (provStats === 'Not Run') {
         return reservation.$.Name + ' ' + reservation.$.ProvisioningStatus;
       }
     });
@@ -32,9 +32,9 @@ var emailInterval = function(clear) {
   if (clear) {
     clearInterval(interval);
   } else {
-    interval = setInterval(function() {
-      emailer.sendMail(msg);
-    }, 3600000);
+    setInterval(function() {
+      console.log('send email every xx seconds');
+    }, 30000);
   }
 };
 
@@ -53,16 +53,11 @@ var emailInterval = function(clear) {
       }
       console.log('Interval Completed');
     });
-  }, 120000);
-  //Trigger Event
+  }, 15000);
   qualiEvent.on('quali-error', function(errors) {
-    msg = '';
-    errors.forEach(function(error) {
-      msg += error.$.Name+' '+error.$.ProvisioningStatus+'\n';
-    })
+    console.log(errors[0].$.Name);
     if (sendInitial) {
       // Send Email
-      emailer.sendMail(msg);
       console.log('Email Sent');
       emailInterval(false);
       sendInitial = false;
