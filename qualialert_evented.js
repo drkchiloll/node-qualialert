@@ -7,29 +7,26 @@ var EventEmitter = require('events').EventEmitter;
 var qualiEvent = new EventEmitter();
 var sendInitial = true;
 var inError = false;
-var msg;
 
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.reduce(reservations, function(errors, reservation) {
       var provStats = reservation.$.ProvisioningStatus;
-      if (provStats === 'Error') {
+      if (provStats === 'Not Run') {
         errors.push(reservation.$.Name + ' ' + provStats);
       }
       return errors;
     }, [])
   })
   .then(function(errors) {
-    if (errors.length > 0) {
+    console.log(errors);
+    if (errors) {
       qualiEvent.emit('quali-error', errors);
       inError = true;
       return errors;
     }
-    return errors;
+    return null;
   })
-  .catch(function(err) {
-    return err;
-  });
 };
 
 var emailInterval = function(clear) {
@@ -38,8 +35,8 @@ var emailInterval = function(clear) {
     clearInterval(interval);
   } else {
     interval = setInterval(function() {
-      emailer.sendMail(msg);
-    }, 3600000);
+      console.log('send email every xx seconds');
+    }, 30000);
   }
 };
 
@@ -51,30 +48,18 @@ var emailInterval = function(clear) {
     })
     .then(function(errors) {
       if (errors.length === 0 && inError) {
-        //We're No Longer In ERROR
-        console.log('Stop Sending Emails');
-        //Clear the Email Interval
+        console.log('Stopping Sending Emails');
         emailInterval(true);
-        //Reset Send Initial For Next Time
         sendInitial = true;
-        //Take Us Out of Error Programmatically
         inError = false;
       }
       console.log('Interval Completed');
-    })
-    .catch(function(err) {
-      console.log(err);
-    })
-  }, 120000);
-  //Trigger ERROR Event
+    });
+  }, 15000);
   qualiEvent.on('quali-error', function(errors) {
-    msg = '';
-    errors.forEach(function(error) {
-      msg += error + '\n';
-    })
+    // console.log(errors);
     if (sendInitial) {
       // Send Email
-      emailer.sendMail(msg);
       console.log('Email Sent');
       emailInterval(false);
       sendInitial = false;
