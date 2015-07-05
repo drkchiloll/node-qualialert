@@ -10,7 +10,7 @@ var inError = false;
 var msg;
 var emailIntRef;
 
-var runFn = function(qualisys) {
+var checkForErrors = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
     return Promise.reduce(reservations, function(errors, reservation) {
       var provStats = reservation.$.ProvisioningStatus;
@@ -47,7 +47,7 @@ var emailInterval = function(clear) {
   setInterval(function() {
     var quali = new QualiApi();
     quali.login(config.qualiUser, config.qualiPass, 'Global').then(function() {
-      return runFn(quali);
+      return checkForErrors(quali);
     })
     .then(function(errors) {
       if (errors.length === 0 && inError) {
