@@ -8,6 +8,7 @@ var qualiEvent = new EventEmitter();
 var sendInitial = true;
 var inError = false;
 var msg;
+var emailIntRef;
 
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
@@ -33,11 +34,10 @@ var runFn = function(qualisys) {
 };
 
 var emailInterval = function(clear) {
-  var interval;
   if (clear) {
-    clearInterval(interval);
+    clearInterval(emailIntRef);
   } else {
-    interval = setInterval(function() {
+    emailIntRef = setInterval(function() {
       emailer.sendMail(msg);
     }, 3600000);
   }
