@@ -10,20 +10,22 @@ var inError = false;
 
 var runFn = function(qualisys) {
   return qualisys.getCurrentReservations().then(function(reservations) {
-    return Promise.filter(reservations, function(reservation) {
+    return Promise.reduce(reservations, function(errors, reservation) {
       var provStats = reservation.$.ProvisioningStatus;
-      console.log(provStats);
       if (provStats === 'Not Run') {
-        return reservation.$.Name + ' ' + reservation.$.ProvisioningStatus;
+        errors.push(reservation.$.Name + ' ' + provStats);
       }
-    });
-  }).then(function(errors) {
-    if (errors.length > 0) {
+      return errors;
+    }, [])
+  })
+  .then(function(errors) {
+    console.log(errors);
+    if (errors) {
       qualiEvent.emit('quali-error', errors);
       inError = true;
       return errors;
     }
-    return errors;
+    return null;
   })
 };
 
@@ -32,7 +34,7 @@ var emailInterval = function(clear) {
   if (clear) {
     clearInterval(interval);
   } else {
-    setInterval(function() {
+    interval = setInterval(function() {
       console.log('send email every xx seconds');
     }, 30000);
   }
@@ -55,7 +57,7 @@ var emailInterval = function(clear) {
     });
   }, 15000);
   qualiEvent.on('quali-error', function(errors) {
-    console.log(errors[0].$.Name);
+    // console.log(errors);
     if (sendInitial) {
       // Send Email
       console.log('Email Sent');
